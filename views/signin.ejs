@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title> Sign in Page</title>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+        <link rel="stylesheet" Type="text/css" href="css/style.css">
+    </head>
+
+    <body>
+        <% if (typeof message != 'undefined') { %>
+            <h6 class = "success_message"> <%=message %></h6> 
+            <% } %>
+        <div>
+      
+        <h4>WeatherOracle</h4> 
+        <h6>Sign in using your existing account</h6>
+   
+        <form id="signin" action="/signin" method="post">
+         
+            <input class = "input-block" type="text" name="username" placeholder="Username"> 
+            <input class = "input-block" type="password" name="password" placeholder="Password"> 
+            <input  class = "input-block" type="submit" value="Submit">
+
+        </form>
+        <a href="/newaccount">Create new account</a>
+        </div>
+       
+    </body>
+    </html>

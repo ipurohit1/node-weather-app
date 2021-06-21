@@ -1,0 +1,54 @@
+.container {
+    width: 600px;
+    margin: 0 auto;
+  }
+
+h4 {
+    text-align: center;
+    margin-bottom: 2px; 
+}
+
+h6 {
+    margin-top: 5px; 
+    margin-bottom: 25px; 
+}
+
+.success_message {
+    text-align: center;
+    color: green; 
+}
+
+.failure_message {
+    text-align: center;
+    color: red; 
+}
+
+
+body {
+    width: 800px;
+    margin: 20px auto;
+    font-family: 'Open Sans', sans-serif;
+  }
+
+  div{
+    border: 2px solid black;
+    border-radius: 20px; 
+    padding: 50px;
+    position: absolute;
+    top: 35%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+form {
+    text-indent: 30px;
+}
+input {
+    display: block; 
+    margin-bottom: 5px;
+}
+
+p {
+    font-family: 'Times New Roman', sans-serif;
+}
+
