@@ -1,3 +1,4 @@
+require('dotenv').config() 
 var path = require('path')
 var crypto = require('crypto')
 const express = require('express')
@@ -17,12 +18,20 @@ app.set('view engine', 'ejs');
 
 function createConnection() {
     var mysqlConnection = mysql.createConnection({
-        host: config.database.host,
-        user: config.database.user,
-        password: config.database.password,
-        database: config.database.database,
+        host: process.env.HOST,
+        user: process.env.USER,
+        password: process.env.PASSWORD,
+        database: process.env.DATABASE,
         multipleStatements: true
         });
+
+        // var mysqlConnection = mysql.createConnection({
+        //     host: 'localhost',
+        //     user: 'root',
+        //     password: 'root',
+        //     database: 'weather_db',
+        //     multipleStatements: true
+        //     });
     
     mysqlConnection.connect((err)=> {
         if(!err) {
@@ -30,8 +39,8 @@ function createConnection() {
         }
         else {
         console.log('Connection Failed!'+ JSON.stringify(err,undefined,2));
-        throw err
         console.log(err.code)
+        throw err
         }
         });
 
@@ -50,39 +59,72 @@ app.get('/',  (req, res) => {
 })
 
 app.post('/signin',  (req, res) => {
+    console.log('in post signin')
     var connection = createConnection() 
     // check if username exists 
+   
     connection.query('SELECT username, password, password_salt FROM users WHERE username = ' + mysql.escape(req.body.username),
      (err, rows, fields) => {
         if (err) throw err; 
-        // connection.query('SELECT username FROM users', (err, rows, fields) => {
-        //     if (err) throw err; 
-        //     console.log(rows) })
 
-        rows.forEach(row => {
-            if (row['username'] == req.body.username) {
-                // valid username, now need to validate password 
-                crypto.pbkdf2(req.body.password, row['password_salt'], 1000, 16, 'sha512', (err, derivedKey) => {
-                    if(err) {
-                        console.log(err)
-                        throw err
+        // Connection.query('SELECT username FROM users WHERE username = ' + mysql.escape('ip'), (err, rows, fields) => {
+        //     if (err) throw err; 
+        //     console.log(rows.length) })
+
+        if (rows.length == 0) {
+            console.log(rows.length)
+            res.render('signin', {message: "Invalid Username"})
+        }
+        else {
+            console.log(rows.length)
+            let row = rows[0] 
+
+            crypto.pbkdf2(req.body.password, row['password_salt'], 1000, 16, 'sha512', (err, derivedKey) => {
+                if(err) {
+                    console.log(err)
+                    throw err
+                }
+                else {
+                    // check if form password + salt from db is the same as db password
+                    if (derivedKey == row['password']) {
+                        // const url = `api.openweathermap.org/data/2.5/weather?q=Boston&appid=${API_key}` 
+                         // make API call and pass in forecast when rendering home page 
+                        res.render('home', {weather: ""})
                     }
                     else {
-                        // check if form password + salt from db is the same as db password
-                        if (derivedKey == row['password']) {
-                            // make API call and pass in forecast when rendering home page 
-                            res.render('home', {weather: ""})
-                        }
-                        else {
-                            res.render('signin', {weather: "Invalid Password"})
-                        }
+                        res.render('signin', {message: "Invalid Password"})
+                    }
+                
+                } })
+            // verify password 
+        }
+    }) 
+    }) 
+
+//         rows.forEach(row => {
+//             if (row['username'] == req.body.username) {
+//                 // valid username, now need to validate password 
+//                 crypto.pbkdf2(req.body.password, row['password_salt'], 1000, 16, 'sha512', (err, derivedKey) => {
+//                     if(err) {
+//                         console.log(err)
+//                         throw err
+//                     }
+//                     else {
+//                         // check if form password + salt from db is the same as db password
+//                         if (derivedKey == row['password']) {
+//                             // make API call and pass in forecast when rendering home page 
+//                             res.render('home', {weather: ""})
+//                         }
+//                         else {
+//                             res.render('signin', {weather: "Invalid Password"})
+//                         }
                     
-                    } })
-            }
-        })
-        res.render('signin', {message: "Invalid Username"})
-    })
-  })
+//                     } })
+//             }
+//         })
+       
+//     })
+//   })
 
 app.get('/newaccount', (req, res) => {
     res.render('newaccount')
@@ -152,6 +194,7 @@ app.post('/newaccount', async function (req, res) {
     res.render('signin', {message: 'Account created'})
   })
 
-app.listen(3000, () => {
+app.listen(process.env.PORT, () => {
   console.log('Example app listening on port 3000!')
+  console.log(`api.openweathermap.org/data/2.5/weather?q=Boston&appid=${process.env.API_KEY}`)
 })
