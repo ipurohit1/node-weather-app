@@ -3,8 +3,8 @@ var path = require('path')
 var crypto = require('crypto')
 const express = require('express')
 const mysql = require('mysql');
+const fetch = require('node-fetch'); 
 const { create } = require('domain');
-const config = require('./config');
 
 
 const app = express()
@@ -197,4 +197,16 @@ app.post('/newaccount', async function (req, res) {
 app.listen(process.env.PORT, () => {
   console.log('Example app listening on port 3000!')
   console.log(`api.openweathermap.org/data/2.5/weather?q=Boston&appid=${process.env.API_KEY}`)
+  const url = `https://api.openweathermap.org/data/2.5/weather?q=Boston&appid=${process.env.API_KEY}`
+  fetch(url)
+    .then(function(response) {
+        return response.json()
+    })
+    .then(function(data) {
+        console.log('Request succeeded with JSON response', data)
+    })
+    .then(function(error) {
+        console.log('Request failed', error);
+
+})
 })
