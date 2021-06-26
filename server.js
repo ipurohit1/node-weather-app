@@ -80,10 +80,12 @@ app.post('/signin',  (req, res) => {
                                 return response.json()
                             })
                             .then(function(data) {
-                                const temp =   9/5 * (data.main.temp - 273.15) + 32
+                                console.log(data)
+                                const temp =   Math.round(9/5 * (data.main.temp - 273.15) + 32) 
                                 const icon_url = 'http://openweathermap.org/img/w/' + data.weather[0].icon + '.png'
+                                const description = data.weather[0].main
 
-                                res.render('home', {temp: temp, icon_url: icon_url})
+                                res.render('home', {location: null, description: description, temp: temp, icon_url: icon_url})
                             })
                             .catch(function(error) {
                                 console.log('Request failed', error);
@@ -125,12 +127,12 @@ app.post('/newaccount', async function (req, res) {
         rows.forEach(row => {
             if (row['username'] == req.body.username) {
                 console.log(row['username'])
+    
                 res.render('signin', {message: "Username is already taken"})
                 return
             }
         })
     })
-    console.log()
     // Hash password before storing in db
 
     var salt = crypto.randomBytes(16).toString('base64')
@@ -140,7 +142,6 @@ app.post('/newaccount', async function (req, res) {
             throw err
         }
         else {
-            console.log('hash: ' + derivedKey.toString('hex'));
         
             connection.query("INSERT INTO `weather_db`.`users` (`username`, `password`, `password_salt`) VALUES ('" + req.body.username + "', '" + derivedKey.toString('hex')
             + "', '" + salt + "')", (err, result) =>
