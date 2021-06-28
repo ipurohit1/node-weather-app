@@ -9,12 +9,26 @@
 
     <body>
         <h4>WeatherOracle</h4> 
-        <button type="button" onclick="location.href='/'">Sign Out</button> 
+    
+        <button class= "signoutbutton" type="button" onclick="location.href='/'">Sign Out</button> 
 
-        <div>
-        <h6>Current Temperature: <%=temp %></h6>
+        <div class="search">
+        <form class="search" method="POST" action="/search"> 
+         
+            <input type="text" name="zipcode" placeholder="Search by zipcode"> 
+            <input type="submit" value="Submit">
+        
+
+        </form>
+        </div>
+
+        <div class= "weather">
+        <h6><%=location %></h6>
         <h6><%=description %></h6>
+        <h6>Current Temperature: <%=temp %>°</h6>
+        <h6>High: <%=high %>°    Low: <%=low %>° </h6>
         <img src= <%=icon_url %> alt="weather" width="100" height="100">
+       
       
         </div>
        

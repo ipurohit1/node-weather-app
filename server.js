@@ -47,7 +47,7 @@ app.post('/signin',  (req, res) => {
     var connection = createConnection() 
    
     // check if username from body exists 
-    connection.query('SELECT username, password, password_salt FROM users WHERE username = ' + mysql.escape(req.body.username),
+    connection.query('SELECT username, password, password_salt, default_city FROM users WHERE username = ' + mysql.escape(req.body.username),
      (err, results, fields) => {
         if (err) throw err; 
 
@@ -84,8 +84,10 @@ app.post('/signin',  (req, res) => {
                                 const temp =   Math.round(9/5 * (data.main.temp - 273.15) + 32) 
                                 const icon_url = 'http://openweathermap.org/img/w/' + data.weather[0].icon + '.png'
                                 const description = data.weather[0].main
+                                const high =  Math.round(9/5 * (data.main.temp_max - 273.15) + 32) 
+                                const low =  Math.round(9/5 * (data.main.temp_min - 273.15) + 32) 
 
-                                res.render('home', {location: null, description: description, temp: temp, icon_url: icon_url})
+                                res.render('home', {location: result['default_city'], description: description, temp: temp, high: high, low: low, icon_url: icon_url})
                             })
                             .catch(function(error) {
                                 console.log('Request failed', error);
@@ -165,7 +167,19 @@ app.post('/newaccount', async function (req, res) {
     res.render('signin', {message: 'Account created'})
   })
 
+
+  app.post('/search', async (req, res) => {
+    console.log('in search')
+    const url = `https://api.openweathermap.org/data/2.5/weather?zip=${req.body.zipcode},us&appid=${process.env.API_KEY}`
+    const response = await fetch(url)
+    const response_json = await response.json()
+    console.log(response_json)
+
+  })
+  
+
 app.listen(3000, () => {
-  console.log('Example app listening on port 3000!')
+    console.log('Example app listening on port 3000!')
+
 })
 
