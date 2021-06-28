@@ -172,8 +172,18 @@ app.post('/newaccount', async function (req, res) {
     console.log('in search')
     const url = `https://api.openweathermap.org/data/2.5/weather?zip=${req.body.zipcode},us&appid=${process.env.API_KEY}`
     const response = await fetch(url)
-    const response_json = await response.json()
-    console.log(response_json)
+    const data = await response.json()
+    console.log(data)
+
+    const temp =   Math.round(9/5 * (data.main.temp - 273.15) + 32) 
+    const icon_url = 'http://openweathermap.org/img/w/' + data.weather[0].icon + '.png'
+    const description = data.weather[0].main
+    const high =  Math.round(9/5 * (data.main.temp_max - 273.15) + 32) 
+    const low =  Math.round(9/5 * (data.main.temp_min - 273.15) + 32) 
+
+    res.render('home', {location: data.name, description: description, temp: temp, high: high, low: low, icon_url: icon_url})
+
+
 
   })
   
