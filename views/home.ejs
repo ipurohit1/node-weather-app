@@ -2,13 +2,14 @@
 <html lang="en">
     <head>
         <meta charset="utf-8">
-        <title> Home Page</title>
+        <title> Home </title>
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
         <link rel="stylesheet" Type="text/css" href="css/style.css">
     </head>
 
     <body>
         <h4>WeatherOracle</h4> 
+
     
         <button class= "signoutbutton" type="button" onclick="location.href='/'">Sign Out</button> 
 
@@ -22,6 +23,10 @@
         </form>
         </div>
 
+        <% if (typeof message != 'undefined') { %>
+            <h6 class = "failure_message"> <%=message %></h6> 
+            <% } %>
+            
         <div class= "weather">
         <h6><%=location %></h6>
         <h6><%=description %></h6>
